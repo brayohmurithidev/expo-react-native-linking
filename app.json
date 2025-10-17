@@ -27,7 +27,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "expo-linking.fazilabs.com",
+              "host": "expo-react-native-linking.vercel.app",
               "pathPrefix": "/"
             }
           ],
@@ -61,6 +61,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b2ed10e6-1bc9-4bc2-a5ca-e0302a22d3e2"
+      }
     }
   }
 }

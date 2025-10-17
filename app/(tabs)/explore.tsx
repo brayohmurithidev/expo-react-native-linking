@@ -1,36 +1,73 @@
-import { Image } from 'expo-image';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+
+const workouts = [
+  { id: 'w1', name: 'Full Body HIIT', duration: '20 min', intensity: 'High' },
+  { id: 'w2', name: 'Upper Body Strength', duration: '35 min', intensity: 'Medium' },
+  { id: 'w3', name: 'Mobility Flow', duration: '15 min', intensity: 'Low' },
+  { id: 'w4', name: 'Leg Day Power', duration: '40 min', intensity: 'High' },
+];
 
 export default function TabTwoScreen() {
   return (
- <View style={styles.container}>
-     <Text>Explore screen</Text>
- </View>
+    <View style={styles.container}>
+      <Text style={styles.title}>Explore Workouts</Text>
+      <FlatList
+        style={styles.list}
+        data={workouts}
+        keyExtractor={(w) => w.id}
+        ItemSeparatorComponent={() => <View style={styles.sep} />}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <View style={styles.cardLeft}>
+              <Text style={styles.cardName}>{item.name}</Text>
+              <Text style={styles.cardMeta}>{item.duration} • {item.intensity}</Text>
+            </View>
+            <Text style={styles.cardCta}>Start</Text>
+          </View>
+        )}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    padding: 16,
   },
-  titleContainer: {
+  title: {
+    fontSize: 22,
+    fontWeight: '800',
+    marginBottom: 12,
+  },
+  list: {
+    flexGrow: 0,
+  },
+  sep: {
+    height: 8,
+  },
+  card: {
+    padding: 14,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#e2e8f0',
     flexDirection: 'row',
-    gap: 8,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  cardLeft: {
+  },
+  cardName: {
+    fontWeight: '700',
+  },
+  cardMeta: {
+    color: '#64748b',
+    marginTop: 2,
+  },
+  cardCta: {
+    color: '#4f46e5',
+    fontWeight: '700',
   },
 });
