@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
+import { config } from './config';
 
 function App() {
 
@@ -160,8 +161,8 @@ function AppLinkButton({ code }: { code: string }) {
         localStorage.setItem('fazilabs_referral_code', code);
         
         const schemeUrl = `exporeferallinking://referral?code=${code}`;
-        const universalUrl = `https://expo-react-native-linking.vercel.app/referral?code=${code}`;
-        const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.fazitech.exporeferallinking';
+        const universalUrl = `${config.WEB_APP_URL}/referral?code=${code}`;
+        const playStoreUrl = `https://play.google.com/store/apps/details?id=${config.APP_PACKAGE_ID}`;
         
         let didHide = false;
         const visibilityHandler = () => {
@@ -199,7 +200,7 @@ function AppLinkButton({ code }: { code: string }) {
     
     return (
         <a
-            href={`https://expo-react-native-linking.vercel.app/referral?code=${code}`}
+            href={`${config.WEB_APP_URL}/referral?code=${code}`}
             onClick={handleClick}
             className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors"
         >

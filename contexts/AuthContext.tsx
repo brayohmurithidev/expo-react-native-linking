@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '../api/types';
+import { authApi } from '../api/auth';
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
+  register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -43,43 +44,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
-      // Mock login - in real app, call your API
-      if (email === 'john@example.com' && password === 'password') {
-        const mockUser: User = {
-          id: '1',
-          email: 'john@example.com',
-          firstName: 'John',
-          lastName: 'Doe',
-          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-          referralCode: 'JOHN123',
-          createdAt: '2024-01-15T10:30:00Z',
-        };
-        
-        await AsyncStorage.setItem('user', JSON.stringify(mockUser));
-        setUser(mockUser);
-      } else {
-        throw new Error('Invalid credentials');
-      }
+      const response = await authApi.login({ email, password });
+      setUser(response.user);
     } catch (error) {
       throw error;
     }
   };
 
-  const register = async (email: string, password: string, firstName: string, lastName: string) => {
+  const register = async (email: string, password: string, name: string) => {
     try {
-      // Mock registration
-      const newUser: User = {
-        id: Date.now().toString(),
-        email,
-        firstName,
-        lastName,
-        avatar: `https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=4f46e5&color=fff`,
-        referralCode: firstName.toUpperCase() + '123',
-        createdAt: new Date().toISOString(),
-      };
-      
-      await AsyncStorage.setItem('user', JSON.stringify(newUser));
-      setUser(newUser);
+      const response = await authApi.register({ email, password, name });
+      setUser(response.user);
     } catch (error) {
       throw error;
     }
@@ -87,10 +62,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      await AsyncStorage.removeItem('user');
+      await authApi.logout();
       setUser(null);
     } catch (error) {
       console.log('Error during logout:', error);
+      // Even if logout fails, clear local state
+      setUser(null);
     }
   };
 

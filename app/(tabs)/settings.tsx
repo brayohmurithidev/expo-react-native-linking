@@ -58,7 +58,7 @@ export default function SettingsScreen() {
             {/* User Info */}
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Profile</Text>
-                <Text style={styles.userInfo}>{user?.firstName} {user?.lastName}</Text>
+                <Text style={styles.userInfo}>{user?.name}</Text>
                 <Text style={styles.userEmail}>{user?.email}</Text>
             </View>
 

@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('john@example.com');
+  const [email, setEmail] = useState('murithibrianm@gmail.com');
   const [password, setPassword] = useState('password');
   const [isLoading, setIsLoading] = useState(false);
   const { login, register } = useAuth();
@@ -35,7 +35,7 @@ export default function LoginScreen() {
 
     setIsLoading(true);
     try {
-      await register(email, password, 'John', 'Doe');
+      await register(email, password, 'John Doe');
       router.replace('/(tabs)');
     } catch (error) {
       Alert.alert('Registration Failed', 'Please try again');
