@@ -13,9 +13,12 @@ export default function SettingsScreen() {
 
     const handleGenerateLink = async () => {
         try {
+            console.log('User info before generating link:', user);
+            console.log('Auth token available:', !!user);
             await generateMutation.mutateAsync();
             Alert.alert('Success', 'New referral link generated!');
         } catch (error) {
+            console.error('Generate link error:', error);
             Alert.alert('Error', 'Failed to generate referral link');
         }
     };
