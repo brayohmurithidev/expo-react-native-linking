@@ -25,6 +25,12 @@ export const referralApi = {
       const response = await apiClient.post('/referrals/link');
       const data = response.data;
       
+      console.log('Referral link generation response:', data);
+      
+      if (!data.code) {
+        throw new Error('No referral code returned from server');
+      }
+      
       return {
         code: data.code,
         url: data.url || `${getWebAppUrl()}/referral?code=${data.code}`,
@@ -32,11 +38,17 @@ export const referralApi = {
         createdAt: data.created_at || new Date().toISOString(),
       };
     } catch (error: any) {
+      console.error('Referral link generation failed:', error);
       throw new Error(error.response?.data?.message || 'Failed to generate referral link');
     }
   },
 
   async shareReferralLink(code: string): Promise<void> {
+    if (!code) {
+      console.log('Cannot track share event: referral code is undefined');
+      return;
+    }
+    
     try {
       // Try the share endpoint first
       await apiClient.post('/referrals/share', { code });

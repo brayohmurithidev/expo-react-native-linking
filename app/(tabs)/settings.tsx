@@ -21,14 +21,16 @@ export default function SettingsScreen() {
     };
 
     const handleCopyLink = async () => {
-        if (referralLink?.url) {
+        if (referralLink?.url && referralLink?.code) {
             await Clipboard.setStringAsync(referralLink.url);
             Alert.alert('Copied!', 'Referral link copied to clipboard');
+        } else {
+            Alert.alert('Error', 'No referral link available. Please generate one first.');
         }
     };
 
     const handleShareLink = async () => {
-        if (referralLink?.url) {
+        if (referralLink?.url && referralLink?.code) {
             try {
                 await shareMutation.mutateAsync(referralLink.code);
                 await Sharing.shareAsync(referralLink.url, {
@@ -37,6 +39,8 @@ export default function SettingsScreen() {
             } catch (error) {
                 Alert.alert('Error', 'Failed to share referral link');
             }
+        } else {
+            Alert.alert('Error', 'No referral link available. Please generate one first.');
         }
     };
 
