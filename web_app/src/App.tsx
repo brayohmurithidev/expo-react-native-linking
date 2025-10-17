@@ -31,42 +31,7 @@ function App() {
                             FaziLabs Fitness gives you personalized workout plans, real‑time tracking, and coaching support—all in one app. Build momentum, stay consistent, and see results.
                         </p>
                         <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-3">
-                            <a
-                                id="download"
-                                href="https://expo-react-native-linking.vercel.app/referral?code=FAZI123"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    const schemeUrl = 'exporeferallinking://referral?code=FAZI123';
-                                    const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.fazitech.exporeferallinking';
-
-                                    let didHide = false;
-                                    const visibilityHandler = () => {
-                                        didHide = true;
-                                        document.removeEventListener('visibilitychange', visibilityHandler);
-                                    };
-                                    document.addEventListener('visibilitychange', visibilityHandler);
-
-                                    const timeout = window.setTimeout(() => {
-                                        if (!didHide) {
-                                            window.location.href = playStoreUrl;
-                                        }
-                                    }, 1200);
-
-                                    const anchor = document.createElement('a');
-                                    anchor.style.display = 'none';
-                                    anchor.href = schemeUrl;
-                                    document.body.appendChild(anchor);
-                                    anchor.click();
-
-                                    window.setTimeout(() => {
-                                        document.body.removeChild(anchor);
-                                        window.clearTimeout(timeout);
-                                    }, 2000);
-                                }}
-                                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors"
-                            >
-                                Open in App
-                            </a>
+                            <AppLinkButton code="FAZI123" />
                             <a href="#services" className="inline-flex items-center justify-center rounded-lg px-5 py-3 text-sm font-semibold text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
                                 Explore Services
                             </a>
@@ -160,32 +125,7 @@ function App() {
                         <h3 className="text-2xl font-bold tracking-tight text-slate-900">Ready to move better?</h3>
                         <p className="mt-2 text-slate-600">Download the app, set your goal, and start your first workout today.</p>
                         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                            <a
-                                href="https://expo-react-native-linking.vercel.app/referral?code=FAZI123"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    const schemeUrl = 'exporeferallinking://referral?code=FAZI123';
-                                    const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.fazitech.exporeallinking';
-                                    let didHide = false;
-                                    const visibilityHandler = () => {
-                                        didHide = true;
-                                        document.removeEventListener('visibilitychange', visibilityHandler);
-                                    };
-                                    document.addEventListener('visibilitychange', visibilityHandler);
-                                    const timeout = window.setTimeout(() => {
-                                        if (!didHide) {
-                                            window.location.href = playStoreUrl;
-                                        }
-                                    }, 1200);
-                                    window.location.href = schemeUrl;
-                                    window.setTimeout(() => {
-                                        window.clearTimeout(timeout);
-                                    }, 2000);
-                                }}
-                                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors"
-                            >
-                                Open in App
-                            </a>
+                            <AppLinkButton code="FAZI123" />
                             <a href="#contact" className="inline-flex items-center justify-center rounded-lg px-5 py-3 text-sm font-semibold text-indigo-600 ring-1 ring-inset ring-indigo-200 hover:ring-indigo-300">
                                 Contact Us
                             </a>
@@ -211,6 +151,62 @@ function App() {
 }
 
 export default App
+
+function AppLinkButton({ code }: { code: string }) {
+    const handleClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        
+        // Store referral code in localStorage for persistence
+        localStorage.setItem('fazilabs_referral_code', code);
+        
+        const schemeUrl = `exporeferallinking://referral?code=${code}`;
+        const universalUrl = `https://expo-react-native-linking.vercel.app/referral?code=${code}`;
+        const playStoreUrl = 'https://play.google.com/store/apps/details?id=com.fazitech.exporeferallinking';
+        
+        let didHide = false;
+        const visibilityHandler = () => {
+            didHide = true;
+            document.removeEventListener('visibilitychange', visibilityHandler);
+        };
+        document.addEventListener('visibilitychange', visibilityHandler);
+        
+        const timeout = window.setTimeout(() => {
+            if (!didHide) {
+                // If app didn't open, redirect to Play Store
+                window.location.href = playStoreUrl;
+            }
+        }, 1200);
+        
+        // Try custom scheme first
+        const anchor = document.createElement('a');
+        anchor.style.display = 'none';
+        anchor.href = schemeUrl;
+        document.body.appendChild(anchor);
+        anchor.click();
+        
+        // Fallback to universal link after a short delay
+        window.setTimeout(() => {
+            if (!didHide) {
+                window.location.href = universalUrl;
+            }
+        }, 500);
+        
+        window.setTimeout(() => {
+            document.body.removeChild(anchor);
+            window.clearTimeout(timeout);
+        }, 2000);
+    };
+    
+    return (
+        <a
+            href={`https://expo-react-native-linking.vercel.app/referral?code=${code}`}
+            onClick={handleClick}
+            className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors"
+        >
+            Open in App
+        </a>
+    );
+}
 
 function DevicePreview() {
     const slides = [
