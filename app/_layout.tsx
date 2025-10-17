@@ -5,35 +5,13 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { AuthProvider, useAuth } from '../contexts/AuthContext';
+import { AuthProvider } from '../contexts/AuthContext';
 
 export const unstable_settings = {
   anchor: '(tabs)',
 };
 
 const queryClient = new QueryClient();
-
-function RootNavigator() {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading) {
-    return null; // Or a loading screen
-  }
-
-  return (
-    <Stack>
-      {user ? (
-        <>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-          <Stack.Screen name="referral" options={{ title: 'Referral' }} />
-        </>
-      ) : (
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-      )}
-    </Stack>
-  );
-}
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -42,7 +20,13 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <RootNavigator />
+          <Stack>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="login" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+            <Stack.Screen name="referral" options={{ title: 'Referral' }} />
+          </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>
       </AuthProvider>
