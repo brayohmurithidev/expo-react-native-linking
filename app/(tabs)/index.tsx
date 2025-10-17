@@ -1,13 +1,43 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-
+import { Pressable, StyleSheet, Text, View, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { user, logout } = useAuth();
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
+  if (!user) return null;
+
   return (
-      <View style={styles.container}>
-        <Text style={styles.title}>FaziLabs Fitness</Text>
-        <Text style={styles.subtitle}>Train smarter. Track better.</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.profileSection}>
+          <Image source={{ uri: user.avatar }} style={styles.avatar} />
+          <View style={styles.greetingContainer}>
+            <Text style={styles.greeting}>{getGreeting()},</Text>
+            <Text style={styles.name}>{user.firstName}</Text>
+          </View>
+        </View>
+        <Pressable style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </Pressable>
+      </View>
+      
+      <View style={styles.content}>
+        <Text style={styles.title}>Ready to train?</Text>
+        <Text style={styles.subtitle}>Let's get moving today</Text>
+        
         <View style={styles.row}>
           <Pressable style={styles.cta} onPress={() => router.push('/referral?code=FAZI123')}>
             <Text style={styles.ctaText}>Test Referral</Text>
@@ -17,33 +47,81 @@ export default function HomeScreen() {
           </Pressable>
         </View>
       </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    paddingTop: 60,
+    backgroundColor: '#f8fafc',
+  },
+  profileSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  greetingContainer: {
+    gap: 2,
+  },
+  greeting: {
+    fontSize: 16,
+    color: '#64748b',
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1e293b',
+  },
+  logoutButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#fee2e2',
+    borderRadius: 8,
+  },
+  logoutText: {
+    color: '#dc2626',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  content: {
+    flex: 1,
+    padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
   },
   title: {
     fontSize: 24,
     fontWeight: '800',
+    textAlign: 'center',
   },
   subtitle: {
     marginTop: 6,
     color: '#64748b',
+    textAlign: 'center',
   },
   row: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 16,
+    marginTop: 24,
   },
   cta: {
     backgroundColor: '#4f46e5',
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderRadius: 10,
   },
   ctaText: {
