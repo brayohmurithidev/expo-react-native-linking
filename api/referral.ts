@@ -38,10 +38,37 @@ export const referralApi = {
 
   async shareReferralLink(code: string): Promise<void> {
     try {
+      // Try the share endpoint first
       await apiClient.post('/referrals/share', { code });
+      console.log('Share event tracked successfully for code:', code);
     } catch (error: any) {
-      console.log('Failed to track share event:', error.response?.data?.message);
-      // Don't throw error for share tracking failures
+      // If share endpoint doesn't exist, try alternative endpoints
+      if (error.response?.status === 404) {
+        try {
+          // Try updating referral stats instead
+          await apiClient.patch(`/referrals/${code}/share`);
+          console.log('Share event tracked via stats update for code:', code);
+        } catch (statsError: any) {
+          console.log('Share tracking not available - logging locally:', {
+            code,
+            originalError: error.response?.status,
+            statsError: statsError.response?.status
+          });
+          // Log share event locally as fallback
+          console.log(`Referral link shared: ${code} at ${new Date().toISOString()}`);
+        }
+      } else {
+        // Log the full error for debugging
+        console.log('Failed to track share event:', {
+          code,
+          status: error.response?.status,
+          message: error.response?.data?.message || error.message,
+          endpoint: '/referrals/share'
+        });
+      }
+      
+      // Don't throw error for share tracking failures - this is non-critical
+      // The share functionality should still work even if tracking fails
     }
   },
 };
